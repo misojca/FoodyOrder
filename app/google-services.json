@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "255328407164",
+    "project_id": "foodyorder-ed82b",
+    "storage_bucket": "foodyorder-ed82b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:255328407164:android:5a1446d19ee67af26483f9",
+        "android_client_info": {
+          "package_name": "com.example.foodyorder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBONJhsjjfI8D5V-Zmtbh-D_4ySuNLsMwk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
