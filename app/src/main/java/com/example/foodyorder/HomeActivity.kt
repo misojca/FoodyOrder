@@ -76,6 +76,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_cart -> {
                 Toast.makeText(this, "Opening My Cart", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, CartActivity::class.java))
+                finish()
             }
             R.id.nav_logout -> {
                 performLogout()

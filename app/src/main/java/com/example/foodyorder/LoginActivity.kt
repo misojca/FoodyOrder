@@ -8,19 +8,26 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.firebase.Firebase
+
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
     private  lateinit var auth: FirebaseAuth
+    private val firestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
         auth = FirebaseAuth.getInstance()
+
+        if(auth.currentUser != null){
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+            return
+        }
+
         val emailInput = findViewById<EditText>(R.id.emailInput)
         val passwordInput = findViewById<EditText>(R.id.passwordInput)
         val loginBtn = findViewById<Button>(R.id.loginBtn)
@@ -34,21 +41,45 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this,"Please enter email and password", Toast.LENGTH_SHORT)
             }
 
-
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, HomeActivity::class.java))
-                    finish()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Login failed: ${it.message}", Toast.LENGTH_LONG).show()
-                }
+            login(email,password)
 
         }
 
         registerLink.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+    }
+
+    private fun login(email: String, password: String){
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                val userId = auth.currentUser?.uid
+
+                if(userId != null){
+                    checkFireStoreUser(userId)
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Login failed: ${it.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
+    private fun checkFireStoreUser(userId: String){
+        firestore.collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if(document.exists()) {
+                    Toast.makeText(this, "Login successful!", Toast.LENGTH_LONG)
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
+                }else {
+                    Toast.makeText(this, "User data not found in Firestore.", Toast.LENGTH_LONG).show()
+
+                }
+            }.addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to fetch user data: ${e.message}", Toast.LENGTH_LONG).show()
+
+            }
     }
 }

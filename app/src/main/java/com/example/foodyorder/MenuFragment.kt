@@ -13,9 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+
 private const val ARG_RESTAURANT_ID = "restaurant_id"
 private const val ARG_RESTAURANT_NAME = "restaurant_name"
 /**
@@ -47,7 +45,7 @@ class MenuFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         val view = inflater.inflate(R.layout.fragment_menu, container, false)
         dishesRecyclerView = view.findViewById(R.id.dishes_recyclerview)
         restaurantNameTextView = view.findViewById(R.id.menu_restaurant_name)
@@ -56,16 +54,16 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        restaurantNameTextView.text = restaurantName ?: "Meni"
+        restaurantNameTextView.text = restaurantName ?: "Menu"
 
-        // 1. POSTAVITE LAYOUT MANAGER
+
         dishesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         dishAdapter = DishAdapter(mutableListOf())
         dishesRecyclerView.adapter = dishAdapter
 
 
-        // 4. Pozivanje funkcije za učitavanje jela sa Firebase-a (Biće implementirano u Koraku 4)
+
         restaurantId?.let { id ->
             loadDishes(id)
         } ?: run {
@@ -76,7 +74,7 @@ class MenuFragment : Fragment() {
     private fun loadDishes(restaurantId: String) {
 
 
-        // Pristup subkolekciji 'dishes' unutar dokumenta 'restaurantId'
+
         db.collection("restaurants")
             .document(restaurantId)
             .collection("menu")
@@ -84,18 +82,16 @@ class MenuFragment : Fragment() {
             .addOnSuccessListener { result ->
                 val dishList = mutableListOf<Dish>()
                 for (document in result) {
-                    // Mapiranje dokumenta u Dish objekat
+
                     val dish = document.toObject(Dish::class.java).apply {
                         this.documentId = document.id
                     }
                     dishList.add(dish)
                 }
 
-                // 2. Postavi Adapter (MORATE DA KREIRATE DishAdapter!)
-              //  dishesRecyclerView.adapter = DishAdapter(dishList)
 
-                // Za sada, samo prikaži da je učitavanje uspešno
-                // ISPRAVLJENO: Korišćenje requireContext() za bolju stabilnost
+
+
                 dishAdapter.updateItems(dishList)
                 Toast.makeText(requireContext(), "Učitano ${dishList.size} jela.", Toast.LENGTH_SHORT).show()
 
@@ -105,7 +101,7 @@ class MenuFragment : Fragment() {
 
             }
             .addOnFailureListener { exception ->
-                // ISPRAVLJENO: Korišćenje requireContext() za bolju stabilnost
+
                 Toast.makeText(requireContext(), "Greška pri učitavanju menija: ${exception.message}", Toast.LENGTH_LONG).show()
                 Log.e("MenuFragment", "Greška pri dohvatanju jela", exception)
 
@@ -117,9 +113,7 @@ class MenuFragment : Fragment() {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MenuFragment.
+
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
