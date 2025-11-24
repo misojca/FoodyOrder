@@ -1,5 +1,6 @@
 package com.example.foodyorder
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 
 class CartActivity : AppCompatActivity() {
 
@@ -33,6 +36,15 @@ class CartActivity : AppCompatActivity() {
         btnOrder.setOnClickListener {
             placeOrder(cartList)
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
+        })
+
+
     }
 
     private fun loadCartItems(){

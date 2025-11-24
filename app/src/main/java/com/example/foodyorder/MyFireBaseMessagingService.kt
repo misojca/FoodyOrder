@@ -60,7 +60,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        // Ovaj token treba da sačuvaš u Firestore-u da admin.js može da šalje notifikacije
+
         saveTokenToFirestore(token)
     }
 
@@ -70,4 +70,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .document(userId)
             .update("fcmToken", token)
     }
+
+
 }
