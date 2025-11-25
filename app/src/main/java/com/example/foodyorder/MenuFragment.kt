@@ -65,9 +65,10 @@ class MenuFragment : Fragment() {
 
 
         restaurantId?.let { id ->
+
             loadDishes(id)
         } ?: run {
-            Toast.makeText(requireContext(), "Greška: ID restorana nije pronađen.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Restaurant ID not found.", Toast.LENGTH_LONG).show()
         }
     }
 

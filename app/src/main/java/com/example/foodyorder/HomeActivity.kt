@@ -28,6 +28,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        val restaurantId = intent.getStringExtra("restaurantId")
+        val restaurantName = intent.getStringExtra("restaurantName")
+
+        if (restaurantId != null && restaurantName != null) {
+            onRestaurantClick(restaurantId, restaurantName)
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1)
         }
