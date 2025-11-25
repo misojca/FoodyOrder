@@ -86,6 +86,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_logout -> {
                 performLogout()
             }
+            R.id.nav_maps -> {
+                startActivity(Intent(this, MapsActivity   ::class.java))
+            }
         }
         drawerLayout.closeDrawers()
         return true
