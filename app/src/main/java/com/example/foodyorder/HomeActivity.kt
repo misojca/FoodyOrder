@@ -3,6 +3,7 @@ package com.example.foodyorder
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
@@ -118,24 +119,45 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         db.collection("restaurants")
             .get()
             .addOnSuccessListener { result ->
+
+                Log.d("FIREBASE_DEBUG", "Document count: ${result.size()}")
+
                 val restaurantList = mutableListOf<Restaurant>()
+
                 for (document in result) {
 
-                    val restaurant = document.toObject(Restaurant::class.java)
-                    restaurant.documentId = document.id
+                    Log.d("FIREBASE_RAW_DOC", "Document ID: ${document.id}, Data: ${document.data}")
+
+                    val openHoursData = document.get("openHours")
+
+                    Log.d("FIREBASE_OPEN_HOURS_RAW", "Raw openHours value: $openHoursData")
+
+                    val restaurant = Restaurant(
+                        documentId = document.id,
+                        name = document.getString("name") ?: "",
+                        cuisine = document.getString("cuisine") ?: "",
+                        rating = document.getDouble("rating")?.toFloat() ?: 0f,
+                        lat = document.getDouble("lat") ?: 0.0,
+                        lng = document.getDouble("lng") ?: 0.0,
+                        openHours = document.get("openHours") as? Map<String, String> ?: emptyMap()
+                    )
+
+                    Log.d("PARSED_RESTAURANT", "Restaurant loaded: $restaurant")
+                    Log.d("PARSED_OPEN_HOURS", "Parsed openHours: ${restaurant.openHours}")
+
                     restaurantList.add(restaurant)
                 }
 
-                recyclerView.adapter = RestaurantAdapter(restaurantList,this)
+                recyclerView.adapter = RestaurantAdapter(restaurantList, this)
                 loadingIndicator.visibility = View.GONE
             }
             .addOnFailureListener { exception ->
-                Toast.makeText(this, "Error loading reastaurants: ${exception.message}", Toast.LENGTH_LONG).show()
+                Log.e("FIREBASE_ERROR", "Error loading: ${exception.message}")
+                Toast.makeText(this, "Error loading restaurants: ${exception.message}", Toast.LENGTH_LONG).show()
                 loadingIndicator.visibility = View.GONE
-                exception.printStackTrace()
             }
-
     }
+
 
 
 }
