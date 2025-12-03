@@ -70,11 +70,11 @@ class DishAdapter(private val dishList: MutableList<Dish>) :
 
                     cartRef.update(
                         "quantity", newQuantity,
-                        "price", newTotalPrice // Ažuriranje UKUPNE cene u korpi
+                        "price", newTotalPrice
                     )
                     Toast.makeText(holder.itemView.context, "${dish.dishName} added in cart", Toast.LENGTH_SHORT).show()
                 } else {
-                    //OVDE DODATI
+
                     val cartItem = mapOf(
                         "name" to dish.dishName,
                         "quantity" to 1,
@@ -99,3 +99,4 @@ class DishAdapter(private val dishList: MutableList<Dish>) :
         notifyDataSetChanged()
     }
 }
+

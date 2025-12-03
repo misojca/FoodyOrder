@@ -12,17 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 
-// TODO: Rename parameter arguments, choose names that match
+
 
 private const val ARG_RESTAURANT_ID = "restaurant_id"
 private const val ARG_RESTAURANT_NAME = "restaurant_name"
-/**
- * A simple [Fragment] subclass.
- * Use the [MenuFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class MenuFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private lateinit var dishesRecyclerView: RecyclerView
     private lateinit var restaurantNameTextView: TextView
     private lateinit var db: FirebaseFirestore

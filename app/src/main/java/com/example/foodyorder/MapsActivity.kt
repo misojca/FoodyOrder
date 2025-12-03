@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -29,7 +30,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     ) { granted ->
         if (granted) enableUserLocation()
     }
-
+    private var backPressedTime = 0L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -39,77 +40,34 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as com.google.android.gms.maps.SupportMapFragment
         mapFragment.getMapAsync(this)
-    }
-/*
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
 
-        val db = FirebaseFirestore.getInstance()
+        onBackPressedDispatcher.addCallback(this) {
 
-        db.collection("restaurants")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
+            if (backPressedTime + 2000 > System.currentTimeMillis()) return@addCallback
 
-                    val restaurant = document.toObject(Restaurant::class.java)
-                    restaurant.documentId = document.id
+            backPressedTime = System.currentTimeMillis()
 
-                    val position = LatLng(restaurant.lat, restaurant.lng)
-
-                    val marker = mMap.addMarker(
-                        MarkerOptions()
-                            .position(position)
-                            .title(restaurant.name)
-                    )
-
-                    marker?.tag = restaurant
-                }
-            }
-
-        mMap.setOnMarkerClickListener { marker ->
-
-            val restaurant = marker.tag as? Restaurant
-
-            if (restaurant != null) {
-
-                val today = getTodayName()
-                val hoursToday = restaurant.openHours[today] ?: "No info"
-
-                val message = """
-                ${restaurant.name}
-                Today: $hoursToday
-                Rating: ${restaurant.rating}
-            """.trimIndent()
-
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-
-                val intent = Intent(this, HomeActivity::class.java)
-                intent.putExtra("restaurantId", restaurant.documentId)
-                intent.putExtra("restaurantName", restaurant.name)
-                startActivity(intent)
-            }
-
-            true
+            val intent = Intent(this@MapsActivity, HomeActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+            finish()
         }
     }
 
 
-*/
-override fun onMapReady(googleMap: GoogleMap) {
+    override fun onMapReady(googleMap: GoogleMap) {
     mMap = googleMap
     requestLocationPermission()
 
-    // postavi adapter za InfoWindow
     mMap.setInfoWindowAdapter(RestaurantInfoWindowAdapter(this))
 
-    // load restorana
     loadRestaurants()
 
-    // klik na InfoWindow
+
     mMap.setOnInfoWindowClickListener { marker ->
         val restaurant = marker.tag as? Restaurant ?: return@setOnInfoWindowClickListener
 
-        // Pokreće HomeActivity i otvara restoran
+
         val intent = Intent(this, HomeActivity::class.java)
         intent.putExtra("restaurantId", restaurant.documentId)
         intent.putExtra("restaurantName", restaurant.name)
@@ -121,7 +79,7 @@ override fun onMapReady(googleMap: GoogleMap) {
         firestore.collection("restaurants").get().addOnSuccessListener { snapshot ->
             for (doc in snapshot.documents) {
                 val restaurant = doc.toObject(Restaurant::class.java) ?: continue
-                restaurant.documentId = doc.id  // <- ovo fali
+                restaurant.documentId = doc.id
 
                 val position = LatLng(restaurant.lat, restaurant.lng)
                 val marker = mMap.addMarker(
@@ -153,18 +111,5 @@ override fun onMapReady(googleMap: GoogleMap) {
         }
     }
 
-
-
-    private fun getTodayName(): String {
-        return when (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
-            Calendar.MONDAY -> "mon"
-            Calendar.TUESDAY -> "tue"
-            Calendar.WEDNESDAY -> "wed"
-            Calendar.THURSDAY -> "thu"
-            Calendar.FRIDAY -> "fri"
-            Calendar.SATURDAY -> "sat"
-            else -> "sun"
-        }
-    }
 
 }

@@ -1,34 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".MenuFragment">
+    tools:context=".MenuFragment"
+    android:background="?attr/colorSurfaceContainerLow">
 
-    <TextView
-        android:id="@+id/menu_restaurant_name"
+    <!-- 1. Dinamički AppBar (Za Naslov Restorana) -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="16dp"
-        tools:text="Pizzeria Roma - Meni" />
+        android:fitsSystemWindows="true"
+        android:background="?attr/colorSurface">
 
-    <ProgressBar
-        android:id="@+id/menu_loading_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="32dp"
-        android:visibility="gone" />
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentScrim="?attr/colorSurface"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false">
 
+            <!-- Kontejner za Naslov/Informacije -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:gravity="bottom"
+                app:layout_collapseMode="parallax">
+
+                <!-- Naziv Restorana (Veliki i Istaknut) -->
+                <TextView
+                    android:id="@+id/menu_restaurant_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Pizzeria Roma"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnSurface"
+                    android:layout_marginBottom="4dp"/>
+
+                <!-- Opis (Može se koristiti za ocenu ili kuhinju ako se ne dodaju nova polja) -->
+
+
+            </LinearLayout>
+
+
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- 2. Lista Jela (RecyclerView) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dishes_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="80dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_dish" />
-</LinearLayout>
+
+    <!-- 3. Indikator Učitavanja (Fiksiran preko celog ekrana) -->
+    <ProgressBar
+        android:id="@+id/menu_loading_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:elevation="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

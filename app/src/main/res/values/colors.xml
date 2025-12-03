@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
+
     <color name="black">#FF000000</color>
+
     <color name="white">#FFFFFFFF</color>
-</resources>
+
+    <!-- NOVE BOJE ZA TEMU (Teal/Tirkizna) -->
+
+
+    <!-- Primarna boja (za dugmad i akcentovane elemente) -->
+
+    <color name="color_primary">#009688</color>
+
+
+    <!-- Tamnija nijansa primarne boje (za statusnu traku) -->
+
+    <color name="color_primary_dark">#00796B</color>
+
+
+    <!-- Sekundarna/Akcentna boja (za naglaske) -->
+
+    <color name="color_accent">#4DB6AC</color>
+
+
+    <!-- Boja teksta/ikona na primarnoj boji (bela) -->
+
+    <color name="color_on_primary">#FFFFFF</color>
+
+
+    <!-- Boje pozadine za elemente (koristi se u layoutu) -->
+
+    <color name="color_surface_low">#F0F0F0</color> <!-- Svetli režim -->
+
+    <color name="color_surface_low_dark">#1E1E1E</color> <!-- Tamni režim -->
+
+</resources> 
