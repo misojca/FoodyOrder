@@ -1,6 +1,5 @@
 package com.example.foodyorder
 
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Locale
 
 class DishAdapter(private val dishList: MutableList<Dish>) :
     RecyclerView.Adapter<DishAdapter.DishViewHolder>() {
@@ -39,13 +39,14 @@ class DishAdapter(private val dishList: MutableList<Dish>) :
         val dish = dishList[position]
 
         Glide.with(holder.itemView.context)
-            .load(dish.dishImageURL)
+            .load(dish.url)
             .into(holder.dishImageView)
+
         holder.nameTextView.text = dish.dishName
-
-
         holder.descriptionTextView.text = dish.dishDesc
-        holder.priceTextView.text = dish.dishPrice.toString()
+
+        val formattedPrice = String.format(Locale.getDefault(), "%.2f e", dish.dishPrice)
+        holder.priceTextView.text = formattedPrice
 
         holder.buyButton.setOnClickListener {
 
@@ -71,8 +72,11 @@ class DishAdapter(private val dishList: MutableList<Dish>) :
                     cartRef.update(
                         "quantity", newQuantity,
                         "price", newTotalPrice
-                    )
-                    Toast.makeText(holder.itemView.context, "${dish.dishName} added in cart", Toast.LENGTH_SHORT).show()
+                    ).addOnSuccessListener {
+                        Toast.makeText(holder.itemView.context, "${dish.dishName} updated in cart", Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener { e ->
+                        Toast.makeText(holder.itemView.context, "Error updating quantity: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
                 } else {
 
                     val cartItem = mapOf(
@@ -84,6 +88,8 @@ class DishAdapter(private val dishList: MutableList<Dish>) :
                     cartRef.set(cartItem)
                     Toast.makeText(holder.itemView.context, "${dish.dishName} added in cart", Toast.LENGTH_SHORT).show()
                 }
+            }.addOnFailureListener { e ->
+                Toast.makeText(holder.itemView.context, "Error checking cart: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -99,4 +105,3 @@ class DishAdapter(private val dishList: MutableList<Dish>) :
         notifyDataSetChanged()
     }
 }
-
