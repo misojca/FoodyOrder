@@ -20,7 +20,6 @@ class DishAdapter(private val dishList: MutableList<Dish>) :
     private val db = FirebaseFirestore.getInstance()
 
     inner class DishViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
         val nameTextView: TextView = itemView.findViewById(R.id.dish_name_text)
         val descriptionTextView: TextView = itemView.findViewById(R.id.dish_description_text)
         val dishImageView: ImageView = itemView.findViewById(R.id.dish_image)

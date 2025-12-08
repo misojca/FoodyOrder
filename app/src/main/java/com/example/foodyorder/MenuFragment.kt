@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 
 
-
 private const val ARG_RESTAURANT_ID = "restaurant_id"
 private const val ARG_RESTAURANT_NAME = "restaurant_name"
 
