@@ -1,4 +1,3 @@
-
 package com.example.foodyorder
 
 import android.content.Intent
@@ -8,28 +7,29 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import com.google.firebase.firestore.ListenerRegistration
-import org.w3c.dom.Text
 
 class CartActivity : AppCompatActivity() {
-
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
-    private var cartList = mutableListOf<Cart>()
+    private var cartList: MutableList<Cart> = mutableListOf()
+
     private lateinit var cartRecyclerView: RecyclerView
-    private lateinit var cartAdapter: CartAdapter
-    private var backPressedTime = 0L
-    private var cartListener: ListenerRegistration? = null
+    private lateinit var tvEmptyCartMessage: TextView
     private lateinit var btnOrder: Button
-    private lateinit var tvEmptyCartMessage: TextView;
+    private lateinit var tvTotalPrice: TextView
+
+    private lateinit var cartAdapter: CartAdapter
+    private lateinit var cartRepository: CartRepository
+
+    private var cartListener: ListenerRegistration? = null
+    private var backPressedTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,30 +37,30 @@ class CartActivity : AppCompatActivity() {
 
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
-        cartRecyclerView = findViewById(R.id.cartRecyclerView)
-        cartRecyclerView.layoutManager = LinearLayoutManager(this)
-        tvEmptyCartMessage = findViewById(R.id.tv_empty_cart_message)
+        cartRepository = CartRepository()
 
-        cartAdapter = CartAdapter(cartList)
+
+        cartRecyclerView = findViewById(R.id.cartRecyclerView)
+        tvEmptyCartMessage = findViewById(R.id.tv_empty_cart_message)
+        btnOrder = findViewById(R.id.btn_order)
+        tvTotalPrice = findViewById(R.id.tvPrice)
+
+        cartRecyclerView.layoutManager = LinearLayoutManager(this)
+        cartAdapter = CartAdapter(cartList, cartRepository)
         cartRecyclerView.adapter = cartAdapter
 
-        btnOrder = findViewById(R.id.btn_order)
-        btnOrder.isEnabled = false
+
         setupCartListener()
 
         btnOrder.setOnClickListener {
-            placeOrder(cartList)
+            placeOrder()
         }
 
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            }
-        })
+        setupOnBackPressed()
+    }
 
+    private fun setupOnBackPressed() {
         onBackPressedDispatcher.addCallback(this) {
-
             if (backPressedTime + 2000 > System.currentTimeMillis()) return@addCallback
 
             backPressedTime = System.currentTimeMillis()
@@ -70,7 +70,6 @@ class CartActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
     }
 
 
@@ -84,9 +83,9 @@ class CartActivity : AppCompatActivity() {
 
         if(userId == null){
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            handleCartData(emptyList())
             return
         }
-
 
         cartListener = db.collection("users")
             .document(userId)
@@ -94,90 +93,69 @@ class CartActivity : AppCompatActivity() {
             .addSnapshotListener { snapshots, e ->
 
                 if (e != null) {
-                    Toast.makeText(this, "Error loading cart: ${e.message}", Toast.LENGTH_LONG).show()
-
+                    Toast.makeText(this, "Cart loading error ${e.message}", Toast.LENGTH_LONG).show()
+                    handleCartData(emptyList())
                     return@addSnapshotListener
                 }
 
                 if (snapshots != null) {
                     val newCartList = mutableListOf<Cart>()
+                    var totalAmount = 0.0
+
                     for (document in snapshots.documents){
+                        try {
+                            val item = document.toObject(Cart::class.java)
+                            val documentId = document.id
+                            val finalCartItem = item?.copy(documentId = documentId)
 
+                            if (finalCartItem != null) {
+                                newCartList.add(finalCartItem)
 
-                        val item = document.toObject(Cart::class.java)
-
-
-                        if (item != null) {
-                            val itemWithId = item.copy(documentId = document.id)
-                            newCartList.add(itemWithId)
+                                totalAmount += finalCartItem.price
+                                Log.d("CartActivity", "Mapping successful for doceumnt: $documentId")
+                            } else {
+                                Log.e("CartActivity", "Mapping failed for document: ${document.id}")
+                            }
+                        } catch (ex: Exception) {
+                            Log.e("CartActivity", "Mapping exception: ${document.id}", ex)
                         }
                     }
 
-                    cartAdapter.updateItems(newCartList)
-
-                    val isCartEmpty = cartList.isEmpty()
-
-                    btnOrder.isEnabled = newCartList.isNotEmpty()
-
-                    if (isCartEmpty) {
-                        tvEmptyCartMessage.visibility = View.VISIBLE
-                        cartRecyclerView.visibility = View.GONE
-                    } else {
-                        tvEmptyCartMessage.visibility = View.GONE
-                        cartRecyclerView.visibility = View.VISIBLE
-                    }
-
+                    handleCartData(newCartList, totalAmount)
                 }
             }
     }
 
+    private fun handleCartData(data: List<Cart>, totalAmount: Double = 0.0) {
 
+        cartAdapter.updateItems(data)
 
-    private fun placeOrder(cartList: List<Cart>){
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val isCartEmpty = data.isEmpty()
+        btnOrder.isEnabled = !isCartEmpty
 
+        if (isCartEmpty) {
+            tvEmptyCartMessage.visibility = View.VISIBLE
+            cartRecyclerView.visibility = View.GONE
+        } else {
+            tvEmptyCartMessage.visibility = View.GONE
+            cartRecyclerView.visibility = View.VISIBLE
+          //  tvTotalPrice.text = String.format("Ukupno: %.2f e", totalAmount)
 
-        val totalPrice = cartList.sumOf { it.price }
-
-        val orderData = hashMapOf(
-            "userId" to userId,
-            "status" to "pending",
-            "timestamp" to System.currentTimeMillis(),
-            "totalPrice" to totalPrice,
-            "dishes" to cartList.map {
-                hashMapOf(
-                    "name" to it.name,
-                    "price" to it.price,
-                    "quantity" to it.quantity
-                )
-            }
-        )
-
-        db.collection("orders")
-            .add(orderData)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Order Sent Successfully!", Toast.LENGTH_SHORT).show()
-
-               // clearCartItems(userId)
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to send order. Try again.", Toast.LENGTH_SHORT).show()
-            }
+        }
     }
 
-    private fun clearCartItems(userId: String) {
-        db.collection("users")
-            .document(userId)
-            .collection("cart")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    document.reference.delete()
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.e("CartActivity", "Failed to clear cart after order: ${e.message}")
-            }
-    }
 
+    private fun placeOrder(){
+        val callback = object : CartOperationCallback {
+            override fun onSuccess(message: String) {
+                Toast.makeText(this@CartActivity, message, Toast.LENGTH_LONG).show()
+                finish()
+            }
+
+            override fun onFailure(exception: Exception, message: String) {
+                Toast.makeText(this@CartActivity, "$message: ${exception.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+        cartRepository.placeOrder(cartList, callback)
+    }
 }

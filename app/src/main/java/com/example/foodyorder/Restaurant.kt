@@ -8,5 +8,5 @@ data class Restaurant(
     val lat: Double = 0.0,
     val lng: Double = 0.0,
     val openHours: Map<String, String> = emptyMap()) {
-
 }
+

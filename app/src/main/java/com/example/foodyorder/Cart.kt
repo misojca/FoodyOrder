@@ -1,8 +1,16 @@
 package com.example.foodyorder
 
+import com.google.firebase.firestore.DocumentId
+
 data class Cart(
-    var documentId: String = "",
+    @DocumentId
+    val documentId: String = "",
     val name: String = "",
-    val quantity: Int = 1,
-    val price: Double = 0.0
-)
+    val price: Double = 0.0,
+    val quantity: Int = 0,
+    val imageUrl: String = "",
+    val restaurantId: String = ""
+) {
+    @Suppress("unused")
+    constructor() : this("", "", 0.0, 0, "", "")
+}

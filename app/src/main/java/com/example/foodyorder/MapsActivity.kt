@@ -24,7 +24,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val firestore = FirebaseFirestore.getInstance()
-
     private val requestPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->

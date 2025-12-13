@@ -6,9 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-interface OnRestaurantClickListener {
-    fun onRestaurantClick(restaurantId: String, restaurantName: String)
-}
+
 class RestaurantAdapter(private val restaurantList: List<Restaurant>,private val clickListener: OnRestaurantClickListener) :
     RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>() {
 
@@ -40,7 +38,4 @@ class RestaurantAdapter(private val restaurantList: List<Restaurant>,private val
     override fun getItemCount(): Int {
         return restaurantList.size
     }
-
-
-
 }
