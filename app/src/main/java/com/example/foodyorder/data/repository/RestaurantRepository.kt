@@ -1,6 +1,8 @@
-package com.example.foodyorder
+package com.example.foodyorder.data.repository
 
 import android.util.Log
+import com.example.foodyorder.utils.RestaurantCallback
+import com.example.foodyorder.data.model.Restaurant
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 

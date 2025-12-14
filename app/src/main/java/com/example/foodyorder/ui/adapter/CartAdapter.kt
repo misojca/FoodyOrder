@@ -1,4 +1,4 @@
-package com.example.foodyorder
+package com.example.foodyorder.ui.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodyorder.utils.CartOperationCallback
+import com.example.foodyorder.R
+import com.example.foodyorder.data.model.Cart
+import com.example.foodyorder.data.repository.CartRepository
 import com.google.android.material.button.MaterialButton
 
 class CartAdapter(
@@ -28,13 +32,13 @@ class CartAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): CartAdapter.CartViewHolder {
+    ): CartViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_cart, parent, false)
         return CartViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: CartAdapter.CartViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         val cartItem = cartList[position]
 
         holder.dishName.text = cartItem.name

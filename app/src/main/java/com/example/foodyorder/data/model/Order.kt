@@ -1,4 +1,4 @@
-package com.example.foodyorder
+package com.example.foodyorder.data.model
 
 data class Order(
     val restaurantName: String = "",

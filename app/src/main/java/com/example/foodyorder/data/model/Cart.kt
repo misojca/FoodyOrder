@@ -1,4 +1,4 @@
-package com.example.foodyorder
+package com.example.foodyorder.data.model
 
 import com.google.firebase.firestore.DocumentId
 

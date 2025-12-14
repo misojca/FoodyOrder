@@ -1,4 +1,4 @@
-package com.example.foodyorder
+package com.example.foodyorder.ui.activity
 
 import android.os.Bundle
 import android.widget.TextView
@@ -6,6 +6,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodyorder.ui.adapter.OrderAdapter
+import com.example.foodyorder.R
+import com.example.foodyorder.data.model.Order
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 

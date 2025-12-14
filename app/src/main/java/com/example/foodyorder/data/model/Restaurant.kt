@@ -1,4 +1,4 @@
-package com.example.foodyorder
+package com.example.foodyorder.data.model
 
 data class Restaurant(
     var documentId: String = "",
@@ -9,4 +9,3 @@ data class Restaurant(
     val lng: Double = 0.0,
     val openHours: Map<String, String> = emptyMap()) {
 }
-

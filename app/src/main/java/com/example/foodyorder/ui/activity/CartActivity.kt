@@ -1,4 +1,4 @@
-package com.example.foodyorder
+package com.example.foodyorder.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +11,11 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodyorder.ui.adapter.CartAdapter
+import com.example.foodyorder.utils.CartOperationCallback
+import com.example.foodyorder.R
+import com.example.foodyorder.data.model.Cart
+import com.example.foodyorder.data.repository.CartRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration

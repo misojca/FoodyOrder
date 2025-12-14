@@ -1,5 +1,6 @@
-package com.example.foodyorder
+package com.example.foodyorder.ui.activity
 
+import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -11,14 +12,21 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodyorder.utils.OnRestaurantClickListener
+import com.example.foodyorder.R
+import com.example.foodyorder.ui.adapter.RestaurantAdapter
+import com.example.foodyorder.utils.RestaurantCallback
+import com.example.foodyorder.data.model.Restaurant
+import com.example.foodyorder.data.repository.RestaurantRepository
+import com.example.foodyorder.ui.fragment.MenuFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
-
 
 class HomeActivity : AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
@@ -43,7 +51,7 @@ class HomeActivity : AppCompatActivity(),
 
         drawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
-        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
         loadingIndicator = findViewById(R.id.loading_indicator)
 
         restaurantsRecyclerView = findViewById(R.id.restaurants_recyclerview)
@@ -57,7 +65,7 @@ class HomeActivity : AppCompatActivity(),
         restaurantRepository = RestaurantRepository()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1)
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
         }
         checkAndSaveFCMToken()
 
@@ -131,7 +139,7 @@ class HomeActivity : AppCompatActivity(),
 
     override fun onRestaurantClick(restaurantId: String, restaurantName: String) {
 
-        val menuFragment = MenuFragment.newInstance(restaurantId, restaurantName)
+        val menuFragment = MenuFragment.Companion.newInstance(restaurantId, restaurantName)
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, menuFragment)

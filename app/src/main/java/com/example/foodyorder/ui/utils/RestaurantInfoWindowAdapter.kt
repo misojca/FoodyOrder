@@ -1,4 +1,4 @@
-package com.example.foodyorder
+package com.example.foodyorder.ui.utils
 
 import android.content.Context
 import android.graphics.Color
@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import com.example.foodyorder.R
+import com.example.foodyorder.data.model.Restaurant
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import java.text.SimpleDateFormat

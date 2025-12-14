@@ -1,4 +1,4 @@
-package com.example.foodyorder
+package com.example.foodyorder.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +9,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.foodyorder.R
+import com.example.foodyorder.data.model.Dish
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Locale
@@ -44,7 +46,7 @@ class DishAdapter(private val dishList: MutableList<Dish>) :
         holder.nameTextView.text = dish.dishName
         holder.descriptionTextView.text = dish.dishDesc
 
-        val formattedPrice = String.format(Locale.getDefault(), "%.2f e", dish.dishPrice)
+        val formattedPrice = String.Companion.format(Locale.getDefault(), "%.2f e", dish.dishPrice)
         holder.priceTextView.text = formattedPrice
 
         holder.buyButton.setOnClickListener {

@@ -1,10 +1,12 @@
-package com.example.foodyorder
+package com.example.foodyorder.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodyorder.R
+import com.example.foodyorder.data.model.Order
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -44,4 +46,3 @@ class OrderAdapter(private val orderList: List<Order>) :
 
     override fun getItemCount(): Int = orderList.size
 }
-

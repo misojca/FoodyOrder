@@ -1,4 +1,4 @@
-package com.example.foodyorder
+package com.example.foodyorder.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +10,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodyorder.ui.adapter.DishAdapter
+import com.example.foodyorder.R
+import com.example.foodyorder.data.model.Dish
 import com.google.firebase.firestore.FirebaseFirestore
 
 

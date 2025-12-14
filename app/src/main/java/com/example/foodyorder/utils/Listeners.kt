@@ -1,4 +1,6 @@
-package com.example.foodyorder
+package com.example.foodyorder.utils
+
+import com.example.foodyorder.data.model.Restaurant
 
 interface OnRestaurantClickListener {
     fun onRestaurantClick(restaurantId: String, restaurantName: String)
