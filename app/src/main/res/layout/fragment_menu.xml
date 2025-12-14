@@ -8,7 +8,6 @@
     tools:context=".MenuFragment"
     android:background="?attr/colorSurfaceContainerLow">
 
-    <!-- 1. Dinamički AppBar (Za Naslov Restorana) -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,7 +21,6 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="false">
 
-            <!-- Kontejner za Naslov/Informacije -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -32,7 +30,6 @@
                 android:gravity="bottom"
                 app:layout_collapseMode="parallax">
 
-                <!-- Naziv Restorana (Veliki i Istaknut) -->
                 <TextView
                     android:id="@+id/menu_restaurant_name"
                     android:layout_width="match_parent"
@@ -43,9 +40,6 @@
                     android:textColor="?attr/colorOnSurface"
                     android:layout_marginBottom="4dp"/>
 
-                <!-- Opis (Može se koristiti za ocenu ili kuhinju ako se ne dodaju nova polja) -->
-
-
             </LinearLayout>
 
 
@@ -54,7 +48,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- 2. Lista Jela (RecyclerView) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dishes_recyclerview"
         android:layout_width="match_parent"
@@ -65,7 +58,6 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_dish" />
 
-    <!-- 3. Indikator Učitavanja (Fiksiran preko celog ekrana) -->
     <ProgressBar
         android:id="@+id/menu_loading_indicator"
         android:layout_width="wrap_content"

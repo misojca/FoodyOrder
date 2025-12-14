@@ -31,9 +31,13 @@ class CartActivity : AppCompatActivity() {
     private var cartListener: ListenerRegistration? = null
     private var backPressedTime = 0L
 
+    private val TAG = "CartActivity_LOG"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
+
+        Log.d(TAG, "onCreate: CartActivity started.")
 
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
@@ -46,6 +50,7 @@ class CartActivity : AppCompatActivity() {
         tvTotalPrice = findViewById(R.id.tvPrice)
 
         cartRecyclerView.layoutManager = LinearLayoutManager(this)
+        // Inicijalizacija adaptera sa repositoryjem
         cartAdapter = CartAdapter(cartList, cartRepository)
         cartRecyclerView.adapter = cartAdapter
 
@@ -53,6 +58,7 @@ class CartActivity : AppCompatActivity() {
         setupCartListener()
 
         btnOrder.setOnClickListener {
+            Log.d(TAG, "Order button clicked. Placing order...")
             placeOrder()
         }
 
@@ -61,6 +67,7 @@ class CartActivity : AppCompatActivity() {
 
     private fun setupOnBackPressed() {
         onBackPressedDispatcher.addCallback(this) {
+            Log.d(TAG, "Back button pressed. Navigating to HomeActivity.")
             if (backPressedTime + 2000 > System.currentTimeMillis()) return@addCallback
 
             backPressedTime = System.currentTimeMillis()
@@ -75,11 +82,13 @@ class CartActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        Log.d(TAG, "onStop: Removing Firestore listener.")
         cartListener?.remove()
     }
 
     private fun setupCartListener(){
         val userId = auth.currentUser?.uid
+        Log.d(TAG, "Setting up Cart Listener. User ID: $userId")
 
         if(userId == null){
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
@@ -93,12 +102,14 @@ class CartActivity : AppCompatActivity() {
             .addSnapshotListener { snapshots, e ->
 
                 if (e != null) {
+                    Log.e(TAG, "Cart loading error!", e)
                     Toast.makeText(this, "Cart loading error ${e.message}", Toast.LENGTH_LONG).show()
                     handleCartData(emptyList())
                     return@addSnapshotListener
                 }
 
                 if (snapshots != null) {
+                    Log.d(TAG, "New cart snapshot received. Documents: ${snapshots.size()}")
                     val newCartList = mutableListOf<Cart>()
                     var totalAmount = 0.0
 
@@ -110,17 +121,17 @@ class CartActivity : AppCompatActivity() {
 
                             if (finalCartItem != null) {
                                 newCartList.add(finalCartItem)
-
                                 totalAmount += finalCartItem.price
-                                Log.d("CartActivity", "Mapping successful for doceumnt: $documentId")
+                                Log.v(TAG, "Item added: ${finalCartItem.name}, Qty: ${finalCartItem.quantity}, Total Price: ${finalCartItem.price}")
                             } else {
-                                Log.e("CartActivity", "Mapping failed for document: ${document.id}")
+                                Log.w(TAG, "Mapping failed for document: ${document.id}")
                             }
                         } catch (ex: Exception) {
-                            Log.e("CartActivity", "Mapping exception: ${document.id}", ex)
+                            Log.e(TAG, "Mapping exception for document: ${document.id}", ex)
                         }
                     }
 
+                    Log.i(TAG, "Cart update completed. Total items: ${newCartList.size}. Final Total Price: $totalAmount")
                     handleCartData(newCartList, totalAmount)
                 }
             }
@@ -128,6 +139,8 @@ class CartActivity : AppCompatActivity() {
 
     private fun handleCartData(data: List<Cart>, totalAmount: Double = 0.0) {
 
+        cartList.clear()
+        cartList.addAll(data)
         cartAdapter.updateItems(data)
 
         val isCartEmpty = data.isEmpty()
@@ -136,11 +149,13 @@ class CartActivity : AppCompatActivity() {
         if (isCartEmpty) {
             tvEmptyCartMessage.visibility = View.VISIBLE
             cartRecyclerView.visibility = View.GONE
+            tvTotalPrice.text = String.format("Ukupno: %.2f e", 0.0)
+            Log.d(TAG, "Cart is empty. UI updated.")
         } else {
             tvEmptyCartMessage.visibility = View.GONE
             cartRecyclerView.visibility = View.VISIBLE
-          //  tvTotalPrice.text = String.format("Ukupno: %.2f e", totalAmount)
-
+            tvTotalPrice.text = String.format("Ukupno: %.2f e", totalAmount)
+            Log.d(TAG, "Cart contains items. Total price displayed: $totalAmount")
         }
     }
 
@@ -148,11 +163,12 @@ class CartActivity : AppCompatActivity() {
     private fun placeOrder(){
         val callback = object : CartOperationCallback {
             override fun onSuccess(message: String) {
+                Log.d(TAG, "Order success: $message")
                 Toast.makeText(this@CartActivity, message, Toast.LENGTH_LONG).show()
-                finish()
             }
 
             override fun onFailure(exception: Exception, message: String) {
+                Log.e(TAG, "Order failed: $message", exception)
                 Toast.makeText(this@CartActivity, "$message: ${exception.message}", Toast.LENGTH_LONG).show()
             }
         }

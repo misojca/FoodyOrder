@@ -6,4 +6,9 @@
     <string name="nameOfCart">Your cart</string>
     <string name="nameOfOrderButton">Order</string>
     <string name="your_cart_is_empty">Your cart is empty</string>
+    <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="login_tv">Login</string>
 </resources>

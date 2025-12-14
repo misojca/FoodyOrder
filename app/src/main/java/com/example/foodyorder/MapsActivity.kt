@@ -89,7 +89,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-
     private fun requestLocationPermission() {
         when {
             ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)

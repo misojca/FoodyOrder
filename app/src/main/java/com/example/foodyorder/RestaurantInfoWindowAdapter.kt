@@ -15,7 +15,6 @@ import java.util.Locale
 
 private const val TAG = "RestaurantTimeCheck"
 
-
 class RestaurantInfoWindowAdapter(private val context: Context) : GoogleMap.InfoWindowAdapter {
 
     override fun getInfoWindow(marker: Marker): View? = null
@@ -23,13 +22,11 @@ class RestaurantInfoWindowAdapter(private val context: Context) : GoogleMap.Info
     override fun getInfoContents(marker: Marker): View {
         val view = LayoutInflater.from(context).inflate(R.layout.restaurant_info, null)
 
-
         val restaurant = marker.tag as? Restaurant ?: return view
 
         val txtName = view.findViewById<TextView>(R.id.txtRestaurantName)
         val txtHours = view.findViewById<TextView>(R.id.txtHours)
         val txtStatus = view.findViewById<TextView>(R.id.txtStatus)
-
 
         val isOpen = isRestaurantOpen(restaurant)
 
@@ -47,31 +44,22 @@ class RestaurantInfoWindowAdapter(private val context: Context) : GoogleMap.Info
     }
     private fun getTodayHoursString(restaurant: Restaurant): String {
         val day = SimpleDateFormat("EEE", Locale("en", "US")).format(Date()).lowercase()
-
         val hours = restaurant.openHours[day]
-
-
-
         return hours ?: "Not Available"
     }
 
-
     private fun isRestaurantOpen(restaurant: Restaurant): Boolean {
         val openHoursToday = getTodayHoursString(restaurant)
-
 
         if (openHoursToday == "Not Available") {
             return false
         }
 
-
         return parseAndCheckTime(openHoursToday)
     }
 
-
     private fun parseAndCheckTime(openHoursToday: String): Boolean {
 
-        // openHoursToday = "09:00-21:00"
         val parts = openHoursToday.split("-")
         if (parts.size != 2) {
             Log.e(TAG, "Wrong format (expected HH:MM-HH:MM).")
@@ -82,8 +70,6 @@ class RestaurantInfoWindowAdapter(private val context: Context) : GoogleMap.Info
         val currentHour = now.get(Calendar.HOUR_OF_DAY)
         val currentMinute = now.get(Calendar.MINUTE)
 
-
-
         val startParts = parts[0].split(":")
         val endParts = parts[1].split(":")
 
@@ -92,14 +78,11 @@ class RestaurantInfoWindowAdapter(private val context: Context) : GoogleMap.Info
         val endHour = endParts[0].toIntOrNull()
         val endMinute = endParts[1].toIntOrNull()
 
-        // Provera parsiranja
+
         if (startHour == null || startMinute == null || endHour == null || endMinute == null) {
             Log.e(TAG, "Parsing error for hours and minutes")
             return false
         }
-
-
-
 
         val startTotalMinutes = (startHour * 60) + startMinute
         var endTotalMinutes = (endHour * 60) + endMinute
@@ -108,10 +91,7 @@ class RestaurantInfoWindowAdapter(private val context: Context) : GoogleMap.Info
         }
         val currentTotalMinutes = (currentHour * 60) + currentMinute
 
-
         val isOpen = currentTotalMinutes in startTotalMinutes..endTotalMinutes
-
-
 
         return isOpen
     }

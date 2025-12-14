@@ -13,13 +13,11 @@
     android:focusable="true"
     app:rippleColor="?attr/colorSecondaryContainer">
 
-    <!-- Koristimo ConstraintLayout za precizno poravnanje svih polja -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- 1. NAZIV RESTORANA (Glavni naslov) -->
         <TextView
             android:id="@+id/tvRestaurantName"
             android:layout_width="0dp"
@@ -32,7 +30,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tvPrice"/>
 
-        <!-- 4. DATUM/VREME (Manji tekst u gornjem desnom uglu) -->
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
@@ -45,7 +42,6 @@
             app:layout_constraintBottom_toBottomOf="@id/tvRestaurantName"
             app:layout_constraintVertical_bias="0.5"/>
 
-        <!-- Horizontalna linija za razdvajanje zaglavlja od detalja -->
         <View
             android:id="@+id/separator"
             android:layout_width="match_parent"
@@ -56,7 +52,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- 2. STAVKE NARUDŽBINE (Detalji/Opis) -->
         <TextView
             android:id="@+id/tvDishes"
             android:layout_width="0dp"
@@ -72,7 +67,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tvPrice"/>
 
-        <!-- 3. UKUPNA CENA (Istaknuta na dnu) -->
         <TextView
             android:id="@+id/tvPrice"
             android:layout_width="wrap_content"
@@ -85,9 +79,6 @@
             app:layout_constraintTop_toBottomOf="@id/tvDishes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <!-- Napomena: Originalni ID tvPrice je preimenovan u tvPriceTotal za jasniju semantiku -->
-        <!-- ali ispunjava zahtev da se ne dodaju nova polja. -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

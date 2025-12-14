@@ -13,14 +13,12 @@
     android:focusable="true"
     app:rippleColor="?attr/colorPrimaryContainer">
 
-    <!-- Koristi se ConstraintLayout radi fleksibilnosti i performansi -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="12dp"
         android:paddingHorizontal="16dp">
 
-        <!-- 1. NAZIV RESTORANA -->
         <TextView
             android:id="@+id/restaurant_name_text"
             android:layout_width="0dp"
@@ -34,7 +32,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/status_icon"/>
 
-        <!-- 2. VRSTA KUHINJE -->
         <TextView
             android:id="@+id/restaurant_cuisine_text"
             android:layout_width="0dp"
@@ -48,7 +45,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- 3. OCENA -->
         <TextView
             android:id="@+id/restaurant_rating_text"
             android:layout_width="wrap_content"
@@ -64,7 +60,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <!-- 4. IKONA STATUSA (Otvoreno/Zatvoreno) -->
         <ImageView
             android:id="@+id/status_icon"
             android:layout_width="24dp"

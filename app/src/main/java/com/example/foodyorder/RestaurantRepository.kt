@@ -4,26 +4,12 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 
-/**
- * Repository klasa za upravljanje podacima restorana iz Firestore-a.
- * Koristi Callback interfejs za asinhroni povrat rezultata.
- */
 class RestaurantRepository {
 
     private val db = FirebaseFirestore.getInstance()
     private val restaurantsCollection = db.collection("restaurants")
     private val TAG = "RestaurantRepository"
 
-   /*
-    interface RestaurantCallback {
-        fun onRestaurantsLoaded(restaurants: List<Restaurant>)
-        fun onFailure(e: Exception)
-    }
-*/
-    /**
-     * Dohvata listu svih restorana iz Firestore kolekcije.
-     * @param callback Interfejs za povrat rezultata (uspeh ili greška).
-     */
     fun fetchAllRestaurants(callback: RestaurantCallback) {
 
         Log.d(TAG, "Fetching all restaurants...")
@@ -38,10 +24,6 @@ class RestaurantRepository {
             }
     }
 
-    /**
-     * Pomoćna funkcija za mapiranje QuerySnapshot-a u listu Restaurant objekata
-     * i slanje rezultata nazad putem callback-a.
-     */
     private fun handleQuerySnapshot(querySnapshot: QuerySnapshot, callback: RestaurantCallback) {
         val restaurantList = mutableListOf<Restaurant>()
 

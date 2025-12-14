@@ -1,5 +1,6 @@
 package com.example.foodyorder
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,13 +8,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
-import java.lang.ref.WeakReference
 
 class CartAdapter(
     private val cartList: MutableList<Cart>,
-    // Prihvata Repository kao zavisnost
     private val cartRepository: CartRepository
 ) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
+
+    private val TAG = "CartAdapter_LOG"
 
     inner class CartViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val dishName: TextView = itemView.findViewById(R.id.cart_item_name)
@@ -40,7 +41,7 @@ class CartAdapter(
         holder.quantity.text = "x${cartItem.quantity}"
         holder.price.text = String.format("%.2f e", cartItem.price)
 
-        holder.btnMinus.isEnabled = cartItem.quantity > 1
+        holder.btnMinus.isEnabled = cartItem.quantity > 0
 
         if (cartItem.documentId.isEmpty()) {
             Toast.makeText(holder.itemView.context, "Missing ID of the item", Toast.LENGTH_LONG).show()
@@ -49,16 +50,15 @@ class CartAdapter(
             return
         }
 
-        val currentQuantity = cartItem.quantity.toDouble()
-        val unitPrice = if (currentQuantity > 0) cartItem.price / currentQuantity else 0.0
+        val unitPrice = if (cartItem.quantity > 0) cartItem.price / cartItem.quantity.toDouble() else 0.0
 
-        // Adapter sada koristi Repository za sve operacije na podacima
         val callback = object : CartOperationCallback {
             override fun onSuccess(message: String) {
                 Toast.makeText(holder.itemView.context, message, Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(exception: Exception, message: String) {
+                Log.e(TAG, "Operation Failed: $message", exception)
                 Toast.makeText(holder.itemView.context, "$message: ${exception.message}", Toast.LENGTH_LONG).show()
             }
         }
@@ -69,12 +69,8 @@ class CartAdapter(
         }
 
         holder.btnMinus.setOnClickListener {
-            if (cartItem.quantity > 1) {
-                val newQuantity = cartItem.quantity - 1
-                cartRepository.updateCartItemQuantity(cartItem, newQuantity, unitPrice, callback)
-            } else {
-                cartRepository.deleteCartItem(cartItem, callback)
-            }
+            val newQuantity = cartItem.quantity - 1
+            cartRepository.updateCartItemQuantity(cartItem, newQuantity, unitPrice, callback)
         }
     }
 
