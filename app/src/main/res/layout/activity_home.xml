@@ -21,7 +21,6 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:contentScrim="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:toolbarId="@id/toolbar">
 
@@ -29,24 +28,20 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    app:title="Foody Order"
-                    app:titleTextColor="?attr/colorOnPrimary"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                    app:layout_collapseMode="pin"
-                    />
+                    app:layout_collapseMode="pin">
 
-                <com.google.android.material.search.SearchBar
-                    android:id="@+id/search_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:hint="Pretraga restorana..."
-                    android:visibility="gone"
-                    app:layout_collapseMode="parallax"
-                    />
+                    <com.google.android.material.search.SearchBar
+                        android:id="@+id/search_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="16dp"
+                        android:hint="Search" />
+
+                </androidx.appcompat.widget.Toolbar>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
+
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -85,7 +80,6 @@
 
         </FrameLayout>
 
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -93,7 +87,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-
         app:menu="@menu/navigation_drawer_menu"
         />
 

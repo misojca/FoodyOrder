@@ -88,34 +88,19 @@ class MenuFragment : Fragment() {
                     dishList.add(dish)
                 }
 
-
-
-
                 dishAdapter.updateItems(dishList)
-                Toast.makeText(requireContext(), "Učitano ${dishList.size} jela.", Toast.LENGTH_SHORT).show()
-
-                Log.d("MenuFragment", "Učitano jela: ${dishList.size}")
-
-
 
             }
             .addOnFailureListener { exception ->
 
-                Toast.makeText(requireContext(), "Greška pri učitavanju menija: ${exception.message}", Toast.LENGTH_LONG).show()
-                Log.e("MenuFragment", "Greška pri dohvatanju jela", exception)
+                Toast.makeText(requireContext(), "Error loading menu: ${exception.message}", Toast.LENGTH_LONG).show()
+
 
             }
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
 
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
         fun newInstance(restaurantId: String, restaurantName: String) =
             MenuFragment().apply {
                 arguments = Bundle().apply {

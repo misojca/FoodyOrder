@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
-            tools:text="Italijanska, Pizza"
+            tools:text="Delicious Pizza"
             android:textSize="14sp"
             android:textColor="?attr/colorOnSurfaceVariant"
             app:layout_constraintTop_toBottomOf="@id/restaurant_name_text"
@@ -50,10 +50,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-
             android:drawablePadding="4dp"
             android:gravity="center_vertical"
-            tools:text="4.7 (120)"
+            tools:text="4.7"
             android:textSize="14sp"
             android:textColor="?attr/colorOnSurfaceVariant"
             app:layout_constraintTop_toBottomOf="@id/restaurant_cuisine_text"
@@ -64,7 +63,6 @@
             android:id="@+id/status_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-
             app:tint="#4CAF50"
             app:layout_constraintTop_toTopOf="@id/restaurant_name_text"
             app:layout_constraintBottom_toBottomOf="@id/restaurant_name_text"

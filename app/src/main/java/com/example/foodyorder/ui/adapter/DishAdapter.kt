@@ -87,7 +87,7 @@ class DishAdapter(private val dishList: MutableList<Dish>) :
                     )
 
                     cartRef.set(cartItem)
-                    Toast.makeText(holder.itemView.context, "${dish.dishName} added in cart", Toast.LENGTH_SHORT).show()
+
                 }
             }.addOnFailureListener { e ->
                 Toast.makeText(holder.itemView.context, "Error checking cart: ${e.message}", Toast.LENGTH_LONG).show()
