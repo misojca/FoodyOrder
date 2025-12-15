@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+serviceAccountKey.json
+foody-admin/serviceAccountKey.json
+
