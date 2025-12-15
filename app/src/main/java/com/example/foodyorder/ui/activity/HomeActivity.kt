@@ -110,7 +110,7 @@ class HomeActivity : AppCompatActivity(),
     }
 
     private fun setupSearchFunctionality() {
-        // Povezuje SearchBar sa SearchView-om
+
         searchView.setupWithSearchBar(searchBar)
 
         val editText = searchView.editText
@@ -148,10 +148,8 @@ class HomeActivity : AppCompatActivity(),
         val filteredList = allRestaurants.filter { restaurant ->
             restaurant.name?.toLowerCase()?.contains(lowerCaseQuery) == true
         }
-
         searchResultsRecyclerView.adapter = RestaurantAdapter(filteredList, this)
     }
-
 
     private fun setupBackStackListener() {
         supportFragmentManager.addOnBackStackChangedListener {
