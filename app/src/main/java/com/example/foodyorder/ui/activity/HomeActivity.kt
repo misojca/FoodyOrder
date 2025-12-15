@@ -4,9 +4,12 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo // Uvezeno za EditorInfo
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -24,6 +27,8 @@ import com.example.foodyorder.data.model.Restaurant
 import com.example.foodyorder.data.repository.RestaurantRepository
 import com.example.foodyorder.ui.fragment.MenuFragment
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.search.SearchBar
+import com.google.android.material.search.SearchView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
@@ -41,6 +46,11 @@ class HomeActivity : AppCompatActivity(),
     private lateinit var restaurantsRecyclerView: RecyclerView
     private lateinit var fragmentContainer: FrameLayout
 
+    private lateinit var searchBar: SearchBar
+    private lateinit var searchView: SearchView
+    private lateinit var searchResultsRecyclerView: RecyclerView
+    private var allRestaurants: List<Restaurant> = emptyList()
+
     private lateinit var restaurantRepository: RestaurantRepository
 
     private val TAG = "HomeActivity"
@@ -53,9 +63,13 @@ class HomeActivity : AppCompatActivity(),
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         loadingIndicator = findViewById(R.id.loading_indicator)
-
         restaurantsRecyclerView = findViewById(R.id.restaurants_recyclerview)
         fragmentContainer = findViewById(R.id.fragment_container)
+
+        searchBar = findViewById(R.id.search_bar)
+        searchView = findViewById(R.id.search_view)
+        searchResultsRecyclerView = findViewById(R.id.search_results_recyclerview)
+        searchResultsRecyclerView.layoutManager = LinearLayoutManager(this)
 
         setSupportActionBar(toolbar)
 
@@ -82,6 +96,7 @@ class HomeActivity : AppCompatActivity(),
         navView.setNavigationItemSelectedListener(this)
 
         setupBackStackListener()
+        setupSearchFunctionality()
 
 
         val restaurantId = intent.getStringExtra("restaurantId")
@@ -93,6 +108,50 @@ class HomeActivity : AppCompatActivity(),
             setupRestaurantsList()
         }
     }
+
+    private fun setupSearchFunctionality() {
+        // Povezuje SearchBar sa SearchView-om
+        searchView.setupWithSearchBar(searchBar)
+
+        val editText = searchView.editText
+
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterRestaurants(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        })
+
+        editText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                filterRestaurants(v.text.toString())
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
+    }
+
+    private fun filterRestaurants(query: String?) {
+        if (query.isNullOrBlank()) {
+            searchResultsRecyclerView.adapter = RestaurantAdapter(allRestaurants, this)
+            return
+        }
+
+        val lowerCaseQuery = query.toLowerCase()
+
+        val filteredList = allRestaurants.filter { restaurant ->
+            restaurant.name?.toLowerCase()?.contains(lowerCaseQuery) == true
+        }
+
+        searchResultsRecyclerView.adapter = RestaurantAdapter(filteredList, this)
+    }
+
 
     private fun setupBackStackListener() {
         supportFragmentManager.addOnBackStackChangedListener {
@@ -146,6 +205,10 @@ class HomeActivity : AppCompatActivity(),
             .addToBackStack(null)
             .commit()
 
+        if (searchView.isShowing) {
+            searchView.hide()
+        }
+
         restaurantsRecyclerView.visibility = View.GONE
         fragmentContainer.visibility = View.VISIBLE
     }
@@ -182,7 +245,9 @@ class HomeActivity : AppCompatActivity(),
     }
 
     override fun onRestaurantsLoaded(restaurants: List<Restaurant>) {
+        this.allRestaurants = restaurants
         restaurantsRecyclerView.adapter = RestaurantAdapter(restaurants, this)
+        searchResultsRecyclerView.adapter = RestaurantAdapter(restaurants, this)
         loadingIndicator.visibility = View.GONE
     }
 
