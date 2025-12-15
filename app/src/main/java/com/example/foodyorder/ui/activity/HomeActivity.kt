@@ -73,7 +73,6 @@ class HomeActivity : AppCompatActivity(),
 
         setSupportActionBar(toolbar)
 
-
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         restaurantRepository = RestaurantRepository()
