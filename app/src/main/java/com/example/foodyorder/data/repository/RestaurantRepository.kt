@@ -31,9 +31,7 @@ class RestaurantRepository {
 
         for (document in querySnapshot.documents) {
             try {
-                // Koristimo .toObject() za automatsko mapiranje
                 val restaurant = document.toObject(Restaurant::class.java)?.apply {
-                    // Kritično: Postavljanje documentId-ja (UID restorana)
                     this.documentId = document.id
                 }
                 if (restaurant != null) {
@@ -42,7 +40,6 @@ class RestaurantRepository {
                     Log.w(TAG, "Skipping document ${document.id}: Failed to map to Restaurant object.")
                 }
             } catch (e: Exception) {
-                // Hvatamo greške pri mapiranju (npr. neispravni tipovi podataka)
                 Log.e(TAG, "Mapping error for document ${document.id}: ${e.message}")
             }
         }

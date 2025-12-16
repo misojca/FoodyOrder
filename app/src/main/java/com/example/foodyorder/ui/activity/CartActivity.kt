@@ -146,11 +146,11 @@ class CartActivity : AppCompatActivity() {
         if (isCartEmpty) {
             tvEmptyCartMessage.visibility = View.VISIBLE
             cartRecyclerView.visibility = View.GONE
-           // tvTotalPrice.text = String.format(" %.2f e", 0.0)
+
         } else {
             tvEmptyCartMessage.visibility = View.GONE
             cartRecyclerView.visibility = View.VISIBLE
-           // tvTotalPrice.text = String.format(" %.2f e", totalAmount)
+
         }
     }
 
